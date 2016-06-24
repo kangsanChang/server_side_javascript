@@ -7,6 +7,27 @@ app.set('views', './views')
 app.locals.pretty = true;
 //pug로 만든 html 코드가 한줄에 다 나오지 않고 개행과 들여쓰기가 된 형식으로 나옴
 app.use(express.static('public'));
+app.get('/topic', function(req,res){
+	var topics = [
+		'JavaScript is ...',
+		'Nodejs is...',
+		'Express is...'
+	];
+	var output = `
+		<a href="/topic?id=0">JavaScript</a><br>
+		<a href="/topic?id=1">Nodejs</a><br>
+		<a href="/topic?id=2">Express</a><br>
+		<h1>${topics[req.query.id]}</h1>
+	`
+	//들어온 id 값에 따라 해당하는 topic을 배열에서 가져옴
+
+	res.send(output);
+	//res.send(topics[req.query.id]);
+	//받아온 것을 알기 위해서는 request의 값으로 온 req가 필요
+	// res.send(req.query.id + ',' + req.query.name);
+	//http://localhost:3000/topic?id=haha&name=hoho 로 가면 haha,hoho나옴
+	// '&'를 통해 복수의 쿼리를 구분
+});
 app.get('/template', function(req, res){
 	res.render('temp', {time:Date()});
 	// express에서 보낼때는 send 를 썼지만 template engine에서만들 파일 읽을때 redner이용
