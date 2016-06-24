@@ -7,7 +7,8 @@ app.set('views', './views')
 app.locals.pretty = true;
 //pug로 만든 html 코드가 한줄에 다 나오지 않고 개행과 들여쓰기가 된 형식으로 나옴
 app.use(express.static('public'));
-app.get('/topic', function(req,res){
+app.get('/topic/:id', function(req,res){
+	//topic 뒤에 오는 값을 잡아서 id에 넣음
 	var topics = [
 		'JavaScript is ...',
 		'Nodejs is...',
@@ -17,9 +18,11 @@ app.get('/topic', function(req,res){
 		<a href="/topic?id=0">JavaScript</a><br>
 		<a href="/topic?id=1">Nodejs</a><br>
 		<a href="/topic?id=2">Express</a><br>
-		<h1>${topics[req.query.id]}</h1>
-	`
-	//들어온 id 값에 따라 해당하는 topic을 배열에서 가져옴
+		<h1>${topics[req.params.id]}</h1>
+	`//들어온 id 값에 따라 해당하는 topic을 배열에서 가져옴
+
+	//query string으로 접근할때는 request 객체의 query 객체를 사용
+	//path 방식(Semantic URL)을 사용할 때는 query 부분을 params(parameter)로 고침
 
 	res.send(output);
 	//res.send(topics[req.query.id]);
@@ -28,6 +31,12 @@ app.get('/topic', function(req,res){
 	//http://localhost:3000/topic?id=haha&name=hoho 로 가면 haha,hoho나옴
 	// '&'를 통해 복수의 쿼리를 구분
 });
+
+app.get('/topic/:id/:mode',function(req,res){
+	//뒤에 더 params를 붙이려면 해당되는 router 만들어 주면 됨
+	res.send(req.params.id + ',' req.params.mode)
+});
+
 app.get('/template', function(req, res){
 	res.render('temp', {time:Date()});
 	// express에서 보낼때는 send 를 썼지만 template engine에서만들 파일 읽을때 redner이용
