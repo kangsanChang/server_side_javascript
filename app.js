@@ -1,5 +1,17 @@
 var express = require('express');
 var app = express();
+app.set('view engine', 'pug');
+//Template Engine
+app.set('views', './views')
+//pug(jade) file을 저장할 곳 (사실 default)
+app.locals.pretty = true;
+//pug로 만든 html 코드가 한줄에 다 나오지 않고 개행과 들여쓰기가 된 형식으로 나옴
+app.use(express.static('public'));
+app.get('/template', function(req, res){
+	res.render('temp', {time:Date()});
+	// express에서 보낼때는 send 를 썼지만 template engine에서만들 파일 읽을때 redner이용
+	// template으로 들어오면 views 안에서 temp를 찾아서 render
+});
 app.get('/',function(req, res){
 	res.send('HELL JOSEON');
 });
@@ -27,7 +39,6 @@ app.get('/dynamic', function(req,res){
 	res.send(output);
 })
 
-app.use(express.static('public'));
 app.get('/gogh',function(req,res){
 	res.send("Hello Gogh!, <img src='/gogh.jpg'>");
 	// localhost:3000/gogh가 기본 주소가 됨 그곳에서 /gogh.jpg 찾음
