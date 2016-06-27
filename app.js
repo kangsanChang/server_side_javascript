@@ -1,4 +1,5 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
 app.set('view engine', 'pug');
 //Template Engine
@@ -6,6 +7,8 @@ app.set('views', './views')
 //pug(jade) file을 저장할 곳 (사실 default)
 app.locals.pretty = true;
 //pug로 만든 html 코드가 한줄에 다 나오지 않고 개행과 들여쓰기가 된 형식으로 나옴
+app.use(bodyParser.urlencoded({extended : false}))
+//모든 url은 bodyParser를 거쳐서 사용 할 수 있도록 함
 app.use(express.static('public'));
 app.get('/topic/:id', function(req,res){
 	//topic 뒤에 오는 값을 잡아서 id에 넣음
@@ -32,9 +35,25 @@ app.get('/topic/:id', function(req,res){
 	// '&'를 통해 복수의 쿼리를 구분
 });
 
+app.get('/form', function(req,res){
+	res.render('form');
+});
+
+app.get('/form_receiver', function(req,res){
+	var title = req.query.title;
+	var des = req.query.description;
+	res.send(title + ',' + des);
+})
+
+app.post('/form_receiver', function(req, res){
+	var title = req.body.title;
+	var des = req.body.description;
+	res.send(title + ',' + des);
+})
+
 app.get('/topic/:id/:mode',function(req,res){
 	//뒤에 더 params를 붙이려면 해당되는 router 만들어 주면 됨
-	res.send(req.params.id + ',' req.params.mode)
+	res.send(req.params.id + ',' + req.params.mode)
 });
 
 app.get('/template', function(req, res){
